@@ -1,0 +1,22 @@
+{
+  "name": "agentic-payments",
+  "version": "1.0.0",
+  "description": "B2B Agentic Payments Guardrail SDK",
+  "private": true,
+  "license": "MIT",
+  "author": {
+    "name": "Illia",
+    "email": "illia.fin.crypto.infrastructure.1@gmail.com"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.8",
+    "permissionless": "^0.5.0",
+    "viem": "^2.57.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,0 +1,39 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const accounts_1 = require("viem/accounts");
+require("dotenv/config");
+// Адрес задеплоенного модуля лимитов и тестового USDC на Sepolia
+const SPEND_LIMIT_MODULE = "0x4939abee6cf623b680a97a059c400b5081a3bd1e";
+const USDC_SEPOLIA = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238";
+async function main() {
+    console.log("🚀 Initializing Session Key Generation for AI Agent...\n");
+    // 1. Генерация временного приватного ключа для ИИ-агента
+    const agentPrivateKey = (0, accounts_1.generatePrivateKey)();
+    const agentAccount = (0, accounts_1.privateKeyToAccount)(agentPrivateKey);
+    console.log(`🤖 Generated Agent Session Key Address: ${agentAccount.address}`);
+    console.log(`🔑 Private Key (stored locally for agent): ${agentPrivateKey.slice(0, 10)}...\n`);
+    // 2. Настройка параметров и ограничений сессионного ключа (Guardrail Policy)
+    const oneDayInSeconds = 24 * 60 * 60;
+    const validUntil = Math.floor(Date.now() / 1000) + oneDayInSeconds;
+    const dailyLimitInUSDC = 100n * 10n ** 6n; // 100 USDC (у USDC 6 десятичных знаков)
+    const permissions = {
+        agentAddress: agentAccount.address,
+        token: USDC_SEPOLIA,
+        dailyLimit: dailyLimitInUSDC,
+        validUntil,
+    };
+    console.log("📜 Session Key Guardrail Policy:");
+    console.log(`   • Allowed Token: USDC (${permissions.token})`);
+    console.log(`   • Daily Spend Limit: 100 USDC`);
+    console.log(`   • Valid Until: ${new Date(permissions.validUntil * 1000).toLocaleString()}\n`);
+    // 3. Проверка подписи сообщения сессионным ключом агента
+    const testMessage = "Agentic Payment Approval Request #001";
+    const signature = await agentAccount.signMessage({ message: testMessage });
+    console.log(`✍️ Test Message Signed by Agent: "${testMessage}"`);
+    console.log(`📝 Signature: ${signature.slice(0, 20)}...\n`);
+    console.log("🎉 Session Key setup & agent signature test completed successfully!");
+}
+main().catch((error) => {
+    console.error("❌ Error setting up Session Key:", error);
+    process.exit(1);
+});
