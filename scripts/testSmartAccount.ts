@@ -5,7 +5,7 @@ import { createSmartAccountClient } from "permissionless";
 import { toSafeSmartAccount } from "permissionless/accounts";
 import "dotenv/config";
 
-// Загрузка приватного ключа владельца из файла .env
+// Load owner private key from .env file
 const PRIVATE_KEY = process.env.PRIVATE_KEY as `0x${string}`;
 
 if (!PRIVATE_KEY) {
@@ -16,17 +16,17 @@ if (!PRIVATE_KEY) {
 async function main() {
   console.log("🚀 Initializing Smart Account setup on Sepolia...\n");
 
-  // 1. Создание стандартного публичного клиента viem для Sepolia
+  // 1. Create standard viem public client for Sepolia
   const publicClient = createPublicClient({
     chain: sepolia,
     transport: http("https://ethereum-sepolia-rpc.publicnode.com"),
   });
 
-  // 2. Создание EOA-владельца из приватного ключа
+  // 2. Create EOA owner from private key
   const owner = privateKeyToAccount(PRIVATE_KEY);
   console.log(`🔑 Owner EOA Address: ${owner.address}`);
 
-  // 3. Создание Safe Smart Account (ERC-7579 совместимого)
+  // 3. Create Safe Smart Account (ERC-7579 compatible)
   const safeAccount = await toSafeSmartAccount({
     client: publicClient,
     owners: [owner],
@@ -36,7 +36,7 @@ async function main() {
   const smartAccountAddress: Address = safeAccount.address;
   console.log(`✨ Smart Account Address: ${smartAccountAddress}\n`);
 
-  // 4. Проверка баланса ETH на Smart Account
+  // 4. Check ETH balance on Smart Account
   const balance = await publicClient.getBalance({
     address: smartAccountAddress,
   });

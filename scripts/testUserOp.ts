@@ -23,7 +23,7 @@ async function main() {
 
   const owner = privateKeyToAccount(PRIVATE_KEY);
 
-  // 1. Инициализация Safe Smart Account
+  // 1. Initialize Safe Smart Account
   const safeAccount = await toSafeSmartAccount({
     client: publicClient,
     owners: [owner],
@@ -33,7 +33,7 @@ async function main() {
   console.log(`✨ Smart Account Address: ${safeAccount.address}`);
   console.log(`🛡️ SpendLimitModule Address: ${SPEND_LIMIT_MODULE}`);
 
-  // 2. Проверка баланса смарт-аккаунта перед отправкой UserOp
+  // 2. Check Smart Account balance before sending UserOp
   const balance = await publicClient.getBalance({
     address: safeAccount.address,
   });
@@ -44,11 +44,11 @@ async function main() {
     process.exit(1);
   }
 
-  // 3. Создание Smart Account Client для отправки UserOperations
-  // Используем публичный бандлер или прямую симуляцию
+  // 3. Create Smart Account Client for sending UserOperations
+  // Use a public bundler or direct simulation
   console.log("🛠️ Preparing UserOperation configuration...");
   
-  // Здесь мы готовим вызов взаимодействия с модулем лимитов
+  // Here we prepare the interaction call with the spend limit module
   console.log("✅ UserOp setup structure is ready. Proceeding to simulation phase.");
   console.log("🎉 UserOperation integration test framework initialized successfully!");
 }

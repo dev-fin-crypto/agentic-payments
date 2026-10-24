@@ -3,34 +3,34 @@ pragma solidity ^0.8.23;
 
 /**
  * @title SpendLimitModule
- * @notice Модуль безопасности (Guardrail) для AI-агентов.
- * Жестко ограничивает суточный лимит трат в USDC и разрешенные адреса получателей.
+ * @notice Security module (Guardrail) for AI agents.
+ * Strictly limits the daily USDC spending cap and allowed recipient addresses.
  */
 contract SpendLimitModule {
-    // Владелец смарт-аккаунта (компания / B2B клиент)
+    // Smart account owner (company / B2B client)
     address public immutable owner;
 
-    // Адрес токена USDC (например, в сети Base Sepolia)
+    // USDC token address (e.g., on Base Sepolia network)
     address public immutable usdcToken;
 
-    // Суточный лимит в атомарных единицах (для USDC это 6 знаков, т.е. 100 USDC = 100_000_000)
+    // Daily limit in atomic units (for USDC, 6 decimals, i.e., 100 USDC = 100_000_000)
     uint256 public dailyLimit;
 
-    // Время начала текущего 24-часового окна
+    // Start time of the current 24-hour window
     uint256 public currentPeriodStart;
 
-    // Сумма, уже потраченная в текущем 24-часовом окне
+    // Amount already spent in the current 24-hour window
     uint256 public currentPeriodSpent;
 
-    // Белый список разрешенных адресов назначений (Target Whitelist)
+    // Target whitelist of allowed destination addresses
     mapping(address => bool) public isWhitelisted;
 
-    // Ошибки безопасности
+    // Security errors
     error NotOwner();
     error TargetNotWhitelisted(address target);
     error ExceedsDailyLimit(uint256 requested, uint256 available);
 
-    // События для отслеживания
+    // Tracking events
     event LimitUpdated(uint256 newLimit);
     event WhitelistUpdated(address indexed target, bool status);
     event PaymentExecuted(address indexed target, uint256 amount);
@@ -48,7 +48,7 @@ contract SpendLimitModule {
     }
 
     /**
-     * @notice Добавить или удалить адрес из белого списка
+     * @notice Add or remove an address from the whitelist
      */
     function setWhitelist(address target, bool status) external onlyOwner {
         isWhitelisted[target] = status;
@@ -56,7 +56,7 @@ contract SpendLimitModule {
     }
 
     /**
-     * @notice Изменить суточный лимит
+     * @notice Update the daily spend limit
      */
     function setDailyLimit(uint256 newLimit) external onlyOwner {
         dailyLimit = newLimit;
@@ -64,27 +64,27 @@ contract SpendLimitModule {
     }
 
     /**
-     * @notice Проверка и регистрация платежа AI-агента
-     * @dev Этот метод вызывается перед исполнением транзакции агента
+     * @notice Validate and record an AI agent payment
+     * @dev This method is called before executing the agent transaction
      */
     function validateAndRecordSpend(address target, uint256 amount) external {
-        // 1. Проверка белого списка адресов
+        // 1. Check address whitelist
         if (!isWhitelisted[target]) {
             revert TargetNotWhitelisted(target);
         }
 
-        // 2. Сброс суточного окна, если прошло 24 часа (86400 секунд)
+        // 2. Reset daily window if 24 hours (86400 seconds) have passed
         if (block.timestamp >= currentPeriodStart + 1 days) {
             currentPeriodStart = block.timestamp;
             currentPeriodSpent = 0;
         }
 
-        // 3. Проверка суточного лимита
+        // 3. Check daily spend limit
         if (currentPeriodSpent + amount > dailyLimit) {
             revert ExceedsDailyLimit(amount, dailyLimit - currentPeriodSpent);
         }
 
-        // 4. Фиксация расхода
+        // 4. Record the expenditure
         currentPeriodSpent += amount;
 
         emit PaymentExecuted(target, amount);
