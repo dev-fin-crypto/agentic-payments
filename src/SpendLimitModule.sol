@@ -9,7 +9,7 @@ pragma solidity ^0.8.23;
 contract SpendLimitModule {
     // Владелец смарт-аккаунта (компания / B2B клиент)
     address public immutable owner;
-    
+
     // Адрес токена USDC (например, в сети Base Sepolia)
     address public immutable usdcToken;
 

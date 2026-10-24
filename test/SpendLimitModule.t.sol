@@ -39,9 +39,7 @@ contract SpendLimitModuleTest is Test {
     function test_RevertWhen_TargetNotWhitelisted() public {
         uint256 paymentAmount = 10 * 1e6;
 
-        vm.expectRevert(
-            abi.encodeWithSelector(SpendLimitModule.TargetNotWhitelisted.selector, unknownRecipient)
-        );
+        vm.expectRevert(abi.encodeWithSelector(SpendLimitModule.TargetNotWhitelisted.selector, unknownRecipient));
         module.validateAndRecordSpend(unknownRecipient, paymentAmount);
     }
 
