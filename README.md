@@ -2,7 +2,6 @@
 
 [![npm version](https://img.shields.io/npm/v/agentic-payments-guard.svg)](https://www.npmjs.com/package/agentic-payments-guard)
 [![license](https://img.shields.io/github/license/dev-fin-crypto/agentic-payments.svg)](LICENSE)
-[![npm downloads](https://img.shields.io/npm/dm/agentic-payments-guard.svg)](https://www.npmjs.com/package/agentic-payments-guard)
 
 A lightweight TypeScript SDK and modular smart contract system designed to secure autonomous AI agent transactions on Ethereum & L2s. Enforce strict spending limits, utilize ephemeral session keys, and integrate ERC-4337 smart accounts effortlessly.
 
