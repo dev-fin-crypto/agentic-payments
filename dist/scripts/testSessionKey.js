@@ -2,20 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const accounts_1 = require("viem/accounts");
 require("dotenv/config");
-// Адрес задеплоенного модуля лимитов и тестового USDC на Sepolia
+// Address of the deployed spend limit module and test USDC on Sepolia
 const SPEND_LIMIT_MODULE = "0x4939abee6cf623b680a97a059c400b5081a3bd1e";
 const USDC_SEPOLIA = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238";
 async function main() {
     console.log("🚀 Initializing Session Key Generation for AI Agent...\n");
-    // 1. Генерация временного приватного ключа для ИИ-агента
+    // 1. Generate a temporary private key for the AI agent
     const agentPrivateKey = (0, accounts_1.generatePrivateKey)();
     const agentAccount = (0, accounts_1.privateKeyToAccount)(agentPrivateKey);
     console.log(`🤖 Generated Agent Session Key Address: ${agentAccount.address}`);
     console.log(`🔑 Private Key (stored locally for agent): ${agentPrivateKey.slice(0, 10)}...\n`);
-    // 2. Настройка параметров и ограничений сессионного ключа (Guardrail Policy)
+    // 2. Configure session key parameters and constraints (Guardrail Policy)
     const oneDayInSeconds = 24 * 60 * 60;
     const validUntil = Math.floor(Date.now() / 1000) + oneDayInSeconds;
-    const dailyLimitInUSDC = 100n * 10n ** 6n; // 100 USDC (у USDC 6 десятичных знаков)
+    const dailyLimitInUSDC = 100n * 10n ** 6n; // 100 USDC (USDC has 6 decimals)
     const permissions = {
         agentAddress: agentAccount.address,
         token: USDC_SEPOLIA,
@@ -26,7 +26,7 @@ async function main() {
     console.log(`   • Allowed Token: USDC (${permissions.token})`);
     console.log(`   • Daily Spend Limit: 100 USDC`);
     console.log(`   • Valid Until: ${new Date(permissions.validUntil * 1000).toLocaleString()}\n`);
-    // 3. Проверка подписи сообщения сессионным ключом агента
+    // 3. Test signing a message with the agent's session key
     const testMessage = "Agentic Payment Approval Request #001";
     const signature = await agentAccount.signMessage({ message: testMessage });
     console.log(`✍️ Test Message Signed by Agent: "${testMessage}"`);

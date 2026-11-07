@@ -33,11 +33,11 @@ class SpendLimitClient {
         return await this.publicClient.getBalance({ address });
     }
     async getRemainingAllowance(_accountAddress) {
-        // Возвращаем стандартный дневной лимит (100 USDC в единицах с 6 знаками)
+        // Return standard daily limit (100 USDC in 6-decimal units)
         return (0, viem_1.parseUnits)("100", 6);
     }
     /**
-     * Честная симуляция расхода средств с проверкой лимита
+     * Fair spend simulation with limit verification
      */
     async simulateSpend(accountAddress, amountInUSDC, dailyLimitUSDC = "100") {
         const amount = (0, viem_1.parseUnits)(amountInUSDC, 6);
